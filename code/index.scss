@@ -1,0 +1,703 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 750px;
+  height: 1479px;
+  background-color: #ddd;
+  .topCard {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 9px;
+    width: 713px;
+    position: relative;
+    .block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      background-color: #ffffff;
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 3px;
+        position: relative;
+        border-bottom: 1px solid #ddd;
+        .titleWrapper {
+          display: flex;
+          position: relative;
+          align-items: flex-start;
+          flex-direction: row;
+          margin-top: 4px;
+          border-top-left-radius: 21px;
+          border-top-right-radius: 21px;
+          background-color: #ffffff;
+          width: 712px;
+          height: 72px;
+          line-height: 51px;
+          white-space: nowrap;
+          .title {
+            position: relative;
+            line-height: 41px;
+            color: #000000;
+            font-size: 28px;
+          }
+        }
+      }
+      .container1 {
+        display: flex;
+        position: relative;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 1px;
+        width: 712px;
+        height: 217px;
+        .containerInner {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-top: 23px;
+          position: relative;
+          border-bottom: solid #ddd;
+          .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 35px;
+            width: 182px;
+            height: 170px;
+            position: relative;
+            background-color: #ffffff;
+            border-bottom: 2px solid #dddddd;
+            .iconCartWrapper {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              margin-top: 30px;
+              background-color: #e9e9e9;
+              width: 64px;
+              height: 64px;
+              overflow: hidden;
+              .imgTrucks {
+                margin-top: 14px;
+                margin-left: 14px;
+                width: 42px;
+                height: 44px;
+              }
+            }
+            .caption {
+              position: relative;
+              margin-top: 16px;
+              max-width: 170px;
+              height: 32px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              line-height: 32px;
+              white-space: nowrap;
+              color: #000000;
+              font-size: 28px;
+              font-weight: 400;
+            }
+          }
+          .modifyTimeButton {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: row;
+            margin-right: 34px;
+            width: 183px;
+            .wrapperInner {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              width: 182px;
+              height: 170px;
+              position: relative;
+              background-color: #ffffff;
+              border-bottom: 2px solid #dddddd;
+              .group {
+                display: flex;
+                position: relative;
+                align-items: center;
+                flex-direction: row;
+                justify-content: center;
+                margin-top: 30px;
+                background-color: #e9e9e9;
+                width: 64px;
+                height: 64px;
+                overflow: hidden;
+                .iconHouseWrapper {
+                  display: flex;
+                  align-items: flex-start;
+                  flex-direction: row;
+                  justify-content: center;
+                  margin-top: 4px;
+                  background-color: rgba(0, 0, 0, 0);
+                  width: 42px;
+                  .iconHouse {
+                    width: 30px;
+                    height: 44px;
+                  }
+                }
+              }
+              .title1 {
+                position: relative;
+                margin-top: 16px;
+                max-width: 170px;
+                height: 32px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 32px;
+                white-space: nowrap;
+                color: #000000;
+                font-size: 28px;
+                font-weight: 400;
+              }
+            }
+          }
+          .finishButton {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: row;
+            width: 183px;
+            .wrapperInner1 {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              width: 182px;
+              height: 170px;
+              position: relative;
+              background-color: #ffffff;
+              border-bottom: 2px solid #dddddd;
+              .group1 {
+                display: flex;
+                position: relative;
+                align-items: flex-start;
+                flex-direction: row;
+                justify-content: center;
+                margin-top: 30px;
+                background-color: #e9e9e9;
+                width: 63px;
+                height: 64px;
+                overflow: hidden;
+                .imgFinish {
+                  margin-top: 16px;
+                  width: 42px;
+                  height: 44px;
+                }
+              }
+              .caption1 {
+                position: relative;
+                margin-top: 16px;
+                max-width: 170px;
+                height: 32px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 32px;
+                white-space: nowrap;
+                color: #000000;
+                font-size: 28px;
+                font-weight: 400;
+              }
+            }
+          }
+        }
+      }
+      .container2 {
+        display: flex;
+        position: relative;
+        align-items: flex-start;
+        flex-direction: column;
+        margin-top: 3px;
+        height: 0px;
+        .horizontalLine5 {
+          position: relative;
+          margin-top: -3px;
+          background-color: #ffffff;
+          width: 713px;
+          height: 3px;
+        }
+      }
+    }
+  }
+  .logisticsCard {
+    display: flex;
+    position: relative;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 55px;
+    .header {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      width: 719px;
+      position: relative;
+      border-bottom: 2px solid #dddddd;
+      .container3 {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        width: 718px;
+        height: 94px;
+        position: relative;
+        background-color: #ffffff;
+        border-bottom: 2px solid #dddddd;
+        border-top-left-radius: 21px;
+        border-top-right-radius: 21px;
+        .title2 {
+          position: relative;
+          margin-top: 27px;
+          margin-right: 10px;
+          margin-left: 27px;
+          line-height: 51px;
+          white-space: pre;
+          color: #000000;
+          font-size: 34px;
+          font-weight: 400;
+        }
+        .iconCopy {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          margin-top: 42px;
+          width: 25px;
+          height: 24px;
+          position: relative;
+          background-color: rgba(0, 0, 0, 0);
+          .icon {
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+    }
+    .body {
+      display: flex;
+      position: relative;
+      align-items: flex-start;
+      flex-direction: row;
+      justify-content: center;
+      margin-top: -2px;
+      background-color: #ffffff;
+      width: 719px;
+      height: 781px;
+      .logisticsInfo {
+        display: flex;
+        position: relative;
+        align-items: flex-start;
+        flex-direction: column;
+        margin-top: 14px;
+        .dateLine {
+          position: absolute;
+          bottom: 38px;
+          left: 166px;
+          width: 2px;
+          height: 484px;
+        }
+        .address {
+          display: flex;
+          position: relative;
+          align-items: center;
+          flex-direction: row;
+          margin-left: 3px;
+          .startIcon {
+            margin-top: -2px;
+            margin-right: 19px;
+            width: 61px;
+            height: 61px;
+          }
+          .text {
+            color: #000000;
+            font-size: 21px;
+            font-weight: 400;
+          }
+        }
+        .sign {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: flex-start;
+          margin-top: 56px;
+          width: 672px;
+          position: relative;
+          .lastDate {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: stretch;
+            margin-top: 8px;
+            margin-right: 0px;
+            height: 87px;
+            position: relative;
+            white-space: nowrap;
+            .lastTitle {
+              display: flex;
+              width: 133px;
+              font-weight: 400;
+              font-size: 41px;
+              color: #000000;
+              line-height: 58px;
+              position: relative;
+            }
+            .lastTime {
+              display: flex;
+              flex-direction: row-reverse;
+              padding-right: 20px;
+              font-weight: 500;
+              font-size: 25px;
+              color: #707070;
+              line-height: 36px;
+              vertical-align: bottom;
+              position: static;
+              top: 60px;
+              bottom: 0px;
+              right: 20px;
+            }
+          }
+          .iconCheck {
+            display: inline;
+            margin-top: 3px;
+            margin-right: 13px;
+            width: 63px;
+            height: 63px;
+            position: static;
+          }
+          .wrapper1 {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            .bigStatus {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              line-height: 43px;
+              .text {
+                color: #000000;
+                font-size: 21px;
+                font-weight: 400;
+              }
+            }
+            .detail {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              margin-top: 5px;
+              line-height: 30px;
+              .text {
+                color: #000000;
+                font-size: 21px;
+                font-weight: 400;
+              }
+            }
+          }
+        }
+        .supplier {
+          display: flex;
+          position: relative;
+          align-items: center;
+          flex-direction: row;
+          margin-top: 15px;
+          margin-left: 46px;
+          width: 610px;
+          .wrapper2 {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: row;
+            margin-right: 22px;
+            .dateTitle {
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+              margin-top: 3px;
+              margin-right: 7px;
+              font-weight: 300;
+              .title {
+                position: relative;
+                line-height: 41px;
+                color: #000000;
+                font-size: 28px;
+              }
+              .time {
+                position: relative;
+                margin-top: 1px;
+                margin-left: 34px;
+                max-width: 63px;
+                height: 23px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 23px;
+                color: #000000;
+                font-size: 16px;
+              }
+            }
+            .iconSupplier {
+              margin-top: 2px;
+              width: 40px;
+              height: 39px;
+            }
+          }
+          .detail {
+            display: flex;
+            position: relative;
+            align-items: flex-start;
+            flex-direction: row;
+            margin-top: 5px;
+            line-height: 30px;
+            .desc {
+              display: -webkit-inline-box;
+              width: 441px;
+              height: 60px;
+              font-weight: 400;
+              font-size: 21px;
+              color: #000000;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              webkit-box-orient: vertical;
+              webkit-line-clamp: 2;
+            }
+          }
+        }
+        .placeOrder {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          margin-top: 19px;
+          margin-left: 46px;
+          position: relative;
+          .wrapperI0 {
+            display: flex;
+            position: relative;
+            align-items: flex-start;
+            flex-direction: row;
+            width: 626px;
+            .dateTitle {
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+              margin-top: 3px;
+              margin-right: 7px;
+              font-weight: 300;
+              .title {
+                position: relative;
+                line-height: 41px;
+                color: #000000;
+                font-size: 28px;
+              }
+              .time {
+                position: relative;
+                margin-top: 1px;
+                margin-left: 34px;
+                max-width: 63px;
+                height: 23px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 23px;
+                color: #000000;
+                font-size: 16px;
+              }
+            }
+            .dateSequenceIcon {
+              margin-right: 20px;
+              width: 40px;
+              height: 39px;
+            }
+            .detail {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              margin-top: 5px;
+              line-height: 30px;
+              .text {
+                color: #000000;
+                font-size: 21px;
+                font-weight: 400;
+              }
+            }
+          }
+          .wrapperI1 {
+            display: flex;
+            position: relative;
+            align-items: flex-start;
+            flex-direction: row;
+            margin-top: 19px;
+            width: 626px;
+            .dateTitle {
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+              margin-top: 3px;
+              margin-right: 7px;
+              font-weight: 300;
+              .title {
+                position: relative;
+                line-height: 41px;
+                color: #000000;
+                font-size: 28px;
+              }
+              .time {
+                position: relative;
+                margin-top: 1px;
+                margin-left: 34px;
+                max-width: 63px;
+                height: 23px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 23px;
+                color: #000000;
+                font-size: 16px;
+              }
+            }
+            .dateSequenceIcon {
+              margin-right: 20px;
+              width: 40px;
+              height: 39px;
+            }
+            .detail {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              margin-top: 5px;
+              line-height: 30px;
+              .text {
+                color: #000000;
+                font-size: 21px;
+                font-weight: 400;
+              }
+            }
+          }
+          .wrapperI2 {
+            display: flex;
+            position: relative;
+            align-items: flex-start;
+            flex-direction: row;
+            margin-top: 28px;
+            width: 626px;
+            .dateTitle {
+              display: flex;
+              align-items: flex-start;
+              flex-direction: column;
+              margin-top: 3px;
+              margin-right: 7px;
+              font-weight: 300;
+              .title {
+                position: relative;
+                line-height: 41px;
+                color: #000000;
+                font-size: 28px;
+              }
+              .time {
+                position: relative;
+                margin-top: 1px;
+                margin-left: 34px;
+                max-width: 63px;
+                height: 23px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                line-height: 23px;
+                color: #000000;
+                font-size: 16px;
+              }
+            }
+            .dateSequenceIcon {
+              margin-right: 20px;
+              width: 40px;
+              height: 39px;
+            }
+            .detail {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              margin-top: 5px;
+              line-height: 30px;
+              .text {
+                color: #000000;
+                font-size: 21px;
+                font-weight: 400;
+              }
+            }
+          }
+        }
+        .start {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-end;
+          margin-top: 13px;
+          margin-left: 46px;
+          width: 360px;
+          position: relative;
+          white-space: nowrap;
+          .dateTitle {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            margin-top: 3px;
+            margin-right: 7px;
+            font-weight: 300;
+            .title {
+              position: relative;
+              line-height: 41px;
+              color: #000000;
+              font-size: 28px;
+            }
+            .time {
+              position: relative;
+              margin-top: 1px;
+              margin-left: 34px;
+              max-width: 63px;
+              height: 23px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              line-height: 23px;
+              color: #000000;
+              font-size: 16px;
+            }
+          }
+          .iconStart {
+            margin-top: 3px;
+            margin-right: 8px;
+            width: 63px;
+            height: 63px;
+            white-space: normal;
+          }
+          .wrapper3 {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: column;
+            .bigStatus {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              line-height: 43px;
+              .text {
+                color: #000000;
+                font-size: 21px;
+                font-weight: 400;
+              }
+            }
+            .detail {
+              display: flex;
+              position: relative;
+              align-items: flex-start;
+              flex-direction: row;
+              margin-top: 5px;
+              line-height: 30px;
+              .text {
+                color: #000000;
+                font-size: 21px;
+                font-weight: 400;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

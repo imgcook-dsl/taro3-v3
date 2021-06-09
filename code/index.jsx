@@ -1,116 +1,268 @@
 'use strict';
 
-import React, { Component } from 'react';
-import { fetch } from 'whatwg-fetch';
-import jsonp from 'fetch-jsonp';
-import styles from './style.js';
+import Taro from '@tarojs/taro';
+import React, { Component, useEffect, useState } from 'react';
+import { View, Text, Image } from '@tarojs/components';
+
+import './index.scss';
+
 const print = function(value) {
   console.log(value);
 };
-class Page_0 extends Component {
-  state = {
-    data: [
-      {
-        title: '小户型卫浴怎样才能装得高大上？',
-        coverImage: 'https://img.alicdn.com/tfs/TB1Txq6o7T2gK0jSZFkXXcIQFXa-684-684.png',
-        readCount: 200,
-        user: { userImage: 'https://img.alicdn.com/tfs/TB1DWe6oYj1gK0jSZFOXXc7GpXa-60-60.png', userName: '时尚家居' },
-        url: 'https://www.imgcook.com'
-      },
-      {
-        title: '拥有超多功能的40平米简约小公寓了解一下',
-        coverImage: 'https://img.alicdn.com/tfs/TB1XRQTo7P2gK0jSZPxXXacQpXa-684-648.png',
-        readCount: 500,
-        user: {
-          userImage: 'https://img.alicdn.com/tfs/TB1DWe6oYj1gK0jSZFOXXc7GpXa-60-60.png',
-          userName: '花花设计工作'
-        },
-        url: 'https://www.imgcook.com/docs'
-      }
-    ]
-  };
-  constructor(props, context) {
-    super();
-    console.log('super props');
-    this.fetch_example();
-    this.jsonp_example();
+class TopCard extends Component {
+  constructor(props) {
+    super(props);
+    let defaultState = {
+      title: '管理物流',
+      imgTrucks: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0c883770c7af11eb9d54e92da5e34759.png',
+      caption: '添加物流单号',
+      iconHouse: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0cb95990c7af11ebb856f54c9bc890e4.png',
+      title1: '修改送货时间',
+      imgFinish: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0ce34fc0c7af11eb944acf6aa4339778.png',
+      caption1: '确认送达'
+    };
+    this.state = Object.assign(defaultState, JSON.parse(JSON.stringify(props)));
   }
-  componentDidUpdate(prevProps, prevState, snapshot) {}
-  isReadCountShow(readCount) {
-    return readCount > 300;
-  }
-  fetch_example() {
-    fetch('https://jsonplaceholder.typicode.com/todos/1', { method: 'GET', headers: '{"Content-Type":"json"}' })
-      .then(response => response.json())
-      .then((data, error) => {
-        console.log('fetch example: ', data, error);
-        return data;
-      })
-      .catch(e => {
-        console.log('error', e);
-      });
-  }
-  jsonp_example() {
-    jsonp('https://assets.airbnb.com/frontend/search_results.js', { jsonpCallbackFunction: 'search_results', body: {} })
-      .then(response => response.json())
-      .then((data, error) => {
-        console.log('jsonp example: ', data, error);
-        return data;
-      })
-      .catch(e => {
-        console.log('error', e);
-      });
-  }
+
   render() {
     return (
-      <div style={styles.box}>
-        {this.state.data.map((item, index) => {
-          return (
-            <div
-              key={index}
-              onClick={e => {
-                window.open(item.url, '_blank');
-              }}
-              data-url={item.url}
-              key={item.index}
-            >
-              <div style={styles.bd}>
-                <img style={styles.layer} src={'https://img.alicdn.com/tfs/TB1bLoWoYH1gK0jSZFwXXc7aXXa-684-684.png'} />
-                <img style={styles.bg} src={item.coverImage} />
-                <div style={styles.wrap}>
-                  <img
-                    style={styles.riverdinwei}
-                    src={'https://img.alicdn.com/tfs/TB1mtZRoVT7gK0jSZFpXXaTkpXa-28-36.png'}
-                  />
-                  <span style={styles.distance}>距离500m</span>
-                </div>
-              </div>
-              <div style={styles.main}>
-                <span style={styles.title}>{item.title}</span>
-              </div>
-              <div style={styles.ft}>
-                <div style={styles.block}>
-                  <img
-                    style={styles.xianjin}
-                    src={'https://img.alicdn.com/tfs/TB1OvsYoW61gK0jSZFlXXXDKFXa-60-60.png'}
-                  />
-                  <span style={styles.fashionHome}>{item.user.userName}</span>
-                </div>
-                {this.isReadCountShow(item.readCount) && (
-                  <div style={styles.group}>
-                    <img
-                      style={styles.favorite}
-                      src={'https://img.alicdn.com/tfs/TB1arwYo7T2gK0jSZFkXXcIQFXa-46-44.png'}
-                    />
-                    <span style={styles.num}>{item.readCount}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <View className="topCard">
+        <View className="block">
+          <View className="container">
+            <View className="titleWrapper">
+              <Text className="title" lines={undefined}>
+                {this.state.title}
+              </Text>
+            </View>
+          </View>
+          <View className="container1">
+            <View className="containerInner">
+              <View className="wrapper">
+                <View className="iconCartWrapper">
+                  <Image className="imgTrucks" src={this.state.imgTrucks} />
+                </View>
+                <Text className="caption" lines={undefined}>
+                  {this.state.caption}
+                </Text>
+              </View>
+              <View className="modifyTimeButton">
+                <View className="wrapperInner">
+                  <View className="group">
+                    <View className="iconHouseWrapper">
+                      <Image className="iconHouse" src={this.state.iconHouse} />
+                    </View>
+                  </View>
+                  <Text className="title1" lines={undefined}>
+                    {this.state.title1}
+                  </Text>
+                </View>
+              </View>
+              <View className="finishButton">
+                <View className="wrapperInner1">
+                  <View className="group1">
+                    <Image className="imgFinish" src={this.state.imgFinish} />
+                  </View>
+                  <Text className="caption1" lines={undefined}>
+                    {this.state.caption1}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View className="container2">
+            <View className="horizontalLine5" />
+          </View>
+        </View>
+      </View>
     );
   }
 }
-export default Page_0;
+class LogisticsCard extends Component {
+  constructor(props) {
+    super(props);
+    let defaultState = {
+      title: '04-25',
+      imgTrucks: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0c883770c7af11eb9d54e92da5e34759.png',
+      caption: '添加物流单号',
+      iconHouse: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0cb95990c7af11ebb856f54c9bc890e4.png',
+      title1: '修改送货时间',
+      imgFinish: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0ce34fc0c7af11eb944acf6aa4339778.png',
+      caption1: '确认送达',
+      title2: '韵达快递 4307724152986',
+      icon: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0c5fa0d0c7af11eb8ba5392765d59567.png',
+      dateLine: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0b108b90c7af11eba4ba8fbfdc198dc6.png',
+      startIcon: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0ae758b0c7af11ebae455b68cbd70cc7.png',
+      text: '装修单可以开始订货',
+      lastTitle: '04-25',
+      lastTime: '17:35',
+      iconCheck: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0b773ca0c7af11eb841747d841cd0675.png',
+      time: '14:20',
+      iconSupplier: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0b9b6670c7af11eb8111477c1ee72cd1.png',
+      desc: '【GE供应商】已经接到订单,并预定在2020年4月25送达',
+      dateSequenceIcon: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0bc583b0c7af11eba86313a2497e2b3c.png',
+      iconStart: 'https://ai-sample.oss-cn-hangzhou.aliyuncs.com/test/0c37f490c7af11eb9206f9195e03249f.png'
+    };
+    this.state = Object.assign(defaultState, JSON.parse(JSON.stringify(props)));
+  }
+
+  render() {
+    return (
+      <View className="logisticsCard">
+        <View className="header">
+          <View className="container3">
+            <Text className="title2" lines={undefined}>
+              {this.state.title2}
+            </Text>
+            <View
+              className="iconCopy"
+            >
+              <Image className="icon" src={this.state.icon} />
+            </View>
+          </View>
+        </View>
+        <View className="body">
+          <View className="logisticsInfo">
+            <Image className="dateLine" src={this.state.dateLine} />
+            <View className="address">
+              <Image className="startIcon" src={this.state.startIcon} />
+              <Text className="text" lines={undefined}>
+                {this.state.text}
+              </Text>
+            </View>
+            <View className="sign">
+              <View className="lastDate">
+                <Text className="lastTitle" lines={undefined}>
+                  {this.state.lastTitle}
+                </Text>
+                <Text className="lastTime" lines={undefined}>
+                  {this.state.lastTime}
+                </Text>
+              </View>
+              <Image className="iconCheck" src={this.state.iconCheck} />
+              <View className="wrapper1">
+                <View className="bigStatus">
+                  <Text className="text" lines={undefined}>
+                    {this.state.text}
+                  </Text>
+                </View>
+                <View className="detail">
+                  <Text className="text" lines={undefined}>
+                    {this.state.text}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View className="supplier">
+              <View className="wrapper2">
+                <View className="dateTitle">
+                  <Text className="title" lines={undefined}>
+                    {this.state.title}
+                  </Text>
+                  <Text className="time" lines={undefined}>
+                    {this.state.time}
+                  </Text>
+                </View>
+                <Image className="iconSupplier" src={this.state.iconSupplier} />
+              </View>
+              <View className="detail">
+                <Text className="desc" lines={undefined}>
+                  {this.state.desc}
+                </Text>
+              </View>
+            </View>
+            <View className="placeOrder">
+              <View className="wrapperI0">
+                <View className="dateTitle">
+                  <Text className="title" lines={undefined}>
+                    {this.state.title}
+                  </Text>
+                  <Text className="time" lines={undefined}>
+                    {this.state.time}
+                  </Text>
+                </View>
+                <Image className="dateSequenceIcon" src={this.state.dateSequenceIcon} />
+                <View className="detail">
+                  <Text className="text" lines={undefined}>
+                    {this.state.text}
+                  </Text>
+                </View>
+              </View>
+              <View className="wrapperI1">
+                <View className="dateTitle">
+                  <Text className="title" lines={undefined}>
+                    {this.state.title}
+                  </Text>
+                  <Text className="time" lines={undefined}>
+                    {this.state.time}
+                  </Text>
+                </View>
+                <Image className="dateSequenceIcon" src={this.state.dateSequenceIcon} />
+                <View className="detail">
+                  <Text className="text" lines={undefined}>
+                    {this.state.text}
+                  </Text>
+                </View>
+              </View>
+              <View className="wrapperI2">
+                <View className="dateTitle">
+                  <Text className="title" lines={undefined}>
+                    {this.state.title}
+                  </Text>
+                  <Text className="time" lines={undefined}>
+                    {this.state.time}
+                  </Text>
+                </View>
+                <Image className="dateSequenceIcon" src={this.state.dateSequenceIcon} />
+                <View className="detail">
+                  <Text className="text" lines={undefined}>
+                    {this.state.text}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <View className="start">
+              <View className="dateTitle">
+                <Text className="title" lines={undefined}>
+                  {this.state.title}
+                </Text>
+                <Text className="time" lines={undefined}>
+                  {this.state.time}
+                </Text>
+              </View>
+              <Image className="iconStart" src={this.state.iconStart} />
+              <View className="wrapper3">
+                <View className="bigStatus">
+                  <Text className="text" lines={undefined}>
+                    {this.state.text}
+                  </Text>
+                </View>
+                <View className="detail">
+                  <Text className="text" lines={undefined}>
+                    {this.state.text}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  }
+}
+class Index extends Component {
+  constructor(props) {
+    super(props);
+    let defaultState = {};
+    this.state = Object.assign(defaultState, JSON.parse(JSON.stringify(props)));
+  }
+
+  render() {
+    return (
+      <View className="page">
+        <TopCard />
+        <LogisticsCard />
+      </View>
+    );
+  }
+}
+export default Index;
