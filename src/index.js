@@ -14,9 +14,7 @@ module.exports = function (schema, option) {
     const classes = [];
 
     const styles = [];
-    // 组件的states
-    const renderStates = {};
-
+    const dynamicObject = new Map();
     // 1vw = width / 100
     const _w = 750 / schema.rect.width;
     console.log("_w: ", _w);
@@ -92,6 +90,32 @@ module.exports = function (schema, option) {
         return style;
     };
 
+    //生成build循环函数
+    const makeBuildMethod = (schema, typeName) => {
+
+        let result = [];
+        if (Array.isArray(schema)) {
+            schema.forEach((layer) => {
+                result += generateRender(layer).xml;
+            });
+        }
+
+        const functionS = `
+          const build${_.upperFirst(_.camelCase(typeName))} = \(itemContent\) => {
+                return (
+                <View>
+                  ${result}
+                </View>
+                )
+        };`;
+        methodName = `build${_.upperFirst(_.camelCase(typeName))}`;
+
+        return {
+            [methodName]: functionS
+        };
+
+
+    }
     // parse function, return params and content
     const parseFunction = (func) => {
         const funcString = func.toString();
@@ -106,10 +130,11 @@ module.exports = function (schema, option) {
         };
     };
 
-    // parse layer props(static values or expression)
+    // 转化元素的props参数 parse layer props(static values or expression)
     const parseProps = (value, isReactNode) => {
+
         if (typeof value === "string") {
-            if (isExpression(value)) {
+            if (isExpression(value)) {  //表达式{}
                 if (isReactNode) {
                     return value.slice(1, -1);
                 } else {
@@ -120,7 +145,7 @@ module.exports = function (schema, option) {
             if (isReactNode) {
                 return value;
             } else {
-                return `'${value}'`;
+                return `${value}`;
             }
         } else if (typeof value === "function") {
             const {params, content} = parseFunction(value);
@@ -220,8 +245,50 @@ module.exports = function (schema, option) {
     })`;
     };
 
-    // generate render xml
-    const generateRender = (schema, isPage) => {
+    const getDynamicParams = (children) => {
+        let params = {};
+
+        if (Array.isArray(children)) {
+            children.forEach(schema => {
+                if (_.has(schema, "smart.layerProtocol.field")) {
+                    const fieldName = schema.smart.layerProtocol.field.type;
+                    let value = "";
+                    switch (schema.componentName) {
+                        case "Text":
+                            value = schema.props.text;
+                            break;
+                        case "Image":
+                            value = schema.props.src;
+                            break;
+                        case "Div":
+                            value = getDynamicParams(schema.children);
+                            break;
+                    }
+                    params[_.camelCase(fieldName)] = value;
+
+                }
+                if (_.has(schema, "children")) {
+                    let subParam = getDynamicParams(schema.children);
+                    params = _.assignIn(params, subParam);
+                }
+            });
+        }
+        return params;
+    };
+
+//对含有loop参数的div进行渲染
+    function parseLoopCode(schema, data, methods, status) {
+        const typeName = schema.smart.layerProtocol.loop.type;
+        const xml = `<View class="${typeName}" ${data} >{state.${typeName}List}</View>`;
+        methods = _.assignIn(methods, makeBuildMethod(schema.children, typeName));
+        let params = getDynamicParams(schema.children);
+        status[typeName] = [params];
+        status[`${typeName}List`] = [];
+        return xml;
+    };
+
+// generate render xml
+    const generateRender = (schema, onIndexContext) => {
         const type = schema.componentName.toLowerCase();
         const className = schema.props && schema.props.className;
         const classString = className
@@ -233,36 +300,60 @@ module.exports = function (schema, option) {
         }
 
         let xml;
-        let props = "";
+        let data = "";
+        let status = {};
 
         Object.keys(schema.props).forEach((key) => {
-            if (["className", "style", "text", "src"].indexOf(key) === -1) {
-                props += ` ${key}={${parseProps(schema.props[key])}}`;
+            if (["className", "style", "text", "src", "lines"].indexOf(key) === -1) {    //其他值
+                data += ` ${key}={${parseProps(schema.props[key])}}`;
             }
         });
+        //程序smart处理部分
+
+        let field = _.has(schema, 'smart.layerProtocol.field');
+
+        let loop = _.has(schema, "smart.layerProtocol.loop");
+        //内部方法函数
+        let methods = {};
 
         switch (type) {
             case "text":
-                const innerText = parseProps(schema.props.text, true);
-                renderStates[_.camelCase(schema.props.className)] = innerText;
-                xml = `<Text${classString}${props}>{this.state.${_.camelCase(
-                    schema.props.className
-                )}}</Text>`;
+                if (field) {
+                    xml = `<Text ${classString} ${data} >{this.itemContent.${_.camelCase(
+                        schema.smart.layerProtocol.field.type
+                    )}}</Text>`;
+                } else {
+                    const innerText = parseProps(schema.props.text, true);
+                    xml = `<Text${classString} ${data} >${innerText}</Text>`;
+                }
+
+
                 break;
             case "image":
-                const source = parseProps(schema.props.src);
-                renderStates[_.camelCase(schema.props.className)] = source;
-                xml = `<Image ${classString} ${props} src={this.state.${_.camelCase(
-                    schema.props.className
-                )}} />`;
+                if (field) {
+                    const source = parseProps(schema.props.src);
+                    xml = `<Image ${classString} ${data} src={this.itemContent.
+                    ${_.camelCase(schema.smart.layerProtocol.field.type)}}  />`;
+                } else {
+                    const source = parseProps(schema.props.src);
+                    xml = `<Image ${classString} ${data} src="${source}"
+                     />`;
+                }
                 break;
             case "div":
                 if (schema.children && schema.children.length) {
-                    xml = `<View ${classString} ${props} >${transform(
-                        schema.children
-                    )}</View>`;
+                    if (loop) {
+                        xml = parseLoopCode(schema, data, methods, status);
+
+                    } else {
+                        let innerTransfer = transformDiv(schema.children);
+                        xml = `<View ${classString} ${data} >${innerTransfer.xml})}</View>`;
+                        methods = _.assignIn(innerTransfer.method);
+                        status = _.assignIn(innerTransfer.status);
+                    }
+
                 } else {
-                    xml = `<View ${classString} ${props} />`;
+                    xml = `<View ${classString} ${data} />`;
                 }
                 break;
             case "page":
@@ -270,21 +361,31 @@ module.exports = function (schema, option) {
 
                 if (Array.isArray(schema.children)) {
                     schema.children.forEach((layer) => {
-                        result += generateRender(layer, true);
+                        let newGenerate = generateRender(layer, true);
+                        result += newGenerate.xml;
                     });
                 }
-                xml = `<View ${classString} ${props} >${result}</View>`;
+                xml = `<View ${classString} ${data} >${result}</View>`;
 
                 transform(schema.children);
                 break;
             case "block":
                 const blockName = _.upperFirst(_.camelCase(schema.props.className));
-                if (isPage) {
-                    xml = `<${blockName} ${props} />`;
+
+
+                if (onIndexContext) {
+                    xml = `<${blockName} ${data} />`;
                 } else {
-                    xml = `<View ${classString} ${props} >${transform(
-                        schema.children
-                    )}</View>`;
+                    if (loop) {
+                        xml = parseLoopCode(schema, xml, classString, data, methods, className, status);
+                    } else {
+                        let innerTransfer = transformDiv(schema.children);
+                        xml = `<View ${classString} ${data} >${innerTransfer.xml})}</View>`;
+                        methods = _.assignIn(innerTransfer.method);
+                        status = _.assignIn(innerTransfer.status);
+                    }
+
+
                 }
 
                 break;
@@ -300,12 +401,84 @@ module.exports = function (schema, option) {
             xml = `{${xml}}`;
         }
 
-        return xml;
+        return {
+            xml: xml,
+            method: methods,
+            status: status,
+        };
+    };
+    const initClassFunction = (functionName, stateName, listName) => {
+        let initCode = `
+        let data = state.${stateName};
+        for (let i = 0; i < data.length; i++) {
+          let itemContent = data[i];
+          let item = buildStartItem(itemContent);
+          state.${listName}.push(item);  
+        }
+        `;
+        return initCode;
+    };
+
+    function customizerAssign(objValue, srcValue, key, object, source) {
+        if (_.isArray(objValue)) {
+            return srcValue.concat(objValue);
+        }
+    }
+
+    //从block到div处理
+    const transformDiv = (schema) => {
+        let xml = "";
+        let methods = {};
+        let status = {};
+        if (Array.isArray(schema)) {
+            schema.forEach((layer) => {
+                let classObject = transformDiv(layer);
+                if (!_.has(methods, _.keys(classObject.method))) { //true:loop函数 ,可以跳过
+
+                    xml += classObject.xml;
+                    methods = _.assignInWith(methods, classObject.method, customizerAssign);
+                }
+                status = _.assignInWith(status, classObject.status, customizerAssign);
+            });
+        } else {
+            let classObject = generateRender(schema);
+            xml += classObject.xml;
+            methods = classObject.method;
+            status = classObject.status;
+        }
+        return {
+            xml: xml,
+            method: methods,
+            status: status,
+        };
     };
     let blockList = [];
-    // parse schema
+// parse schema
     const transform = (schema) => {
         let result = "";
+        let states = [];
+        let methods = [];
+
+        function extractedGenerateRenderProcesses(render, newGenerate, renderStates, methods, initClass) {
+            render.push(newGenerate.xml);
+            renderStates = _.assignInWith(renderStates, newGenerate.status, customizerAssign);
+            //混合method
+            Object.keys(newGenerate.method).forEach(methodName => {
+                methods.push(newGenerate.method[methodName]);
+                let type = _.lowerFirst(methodName.match(/build([^\s]+)/)[1]);
+                let initCode = `
+                        let data = state.${type};
+                        for (let i = 0; i < data.length; i++) {
+                          let itemContent = data[i];
+                          let item = ${methodName}(itemContent);
+                          state.${type}List.push(item);  
+                        }
+                        `;
+
+                initClass.push(initCode);
+            });
+            return renderStates;
+        }
 
         if (Array.isArray(schema)) {
             schema.forEach((layer) => {
@@ -316,18 +489,27 @@ module.exports = function (schema, option) {
 
             if (["page", "block"].indexOf(type) !== -1) {
                 // 容器组件处理: state/method/dataSource/lifeCycle/render
-                const states = [];
-                const lifeCycles = [];
+                let states = [];
+
+                // 组件的states
+                let renderStates = {};
                 const methods = [];
+                const lifeCycles = [];
                 const init = [];
-                const render = [`render(){ return (`];
+                const initClass = [];
+                const render = [];
+                if ("page" == type) {
+                    render.push(`render(){ return (`);
+                } else {
+                    render.push(`return (`);
+                }
                 const blockName = _.upperFirst(_.camelCase(schema.props.className));
                 if (blockList.indexOf(blockName) != -1) {  //存在重复的class模块跳出
                     return result;
-                }
-                {
+                } else {
                     blockList.push(blockName);
                 }
+                //page的state
                 if (schema.state) {
                     states.push(`state = ${toString(schema.state)}`);
                 }
@@ -381,47 +563,52 @@ module.exports = function (schema, option) {
                         }
                     });
                 }
-                render.push(generateRender(schema, false));
+                let newGenerate = generateRender(schema, false);
+                renderStates = extractedGenerateRenderProcesses(render, newGenerate, renderStates, methods, initClass);
 
-                render.push(`);}`);
+
                 let classData;
                 if (type === "page") {
+
+                    render.push(`);}`);
                     classData = [
                         `class Index extends Component {
-            constructor (props) {
-              super(props)
-              let defaultState = {};
-              this.state = Object.assign(defaultState, JSON.parse(JSON.stringify(props)));
-            }
-            `,
+                            constructor (props) {
+                              super(props)
+                              let defaultState = {};
+                              this.state = Object.assign(defaultState, JSON.parse(JSON.stringify(props)));
+                            }
+                        `,
                     ];
                 } else {
+
+                    render.push(`);`);
                     let renderStates1 = JSON.stringify(renderStates);
                     renderStates1 = renderStates1.replace(/\"\'/g, '"');
                     renderStates1 = renderStates1.replace(/\'\"/g, '"');
                     classData = [
-                        `class ${_.upperFirst(
+                        `const ${_.upperFirst(
                             _.camelCase(schema.props.className)
-                        )} extends Component {
-            constructor (props) {
-              super(props)
-              let defaultState = ${renderStates1};
-              this.state = Object.assign(defaultState, JSON.parse(JSON.stringify(props)));
-            }
-            `,
+                        )}  =(props) =>  {
+                          this.state = ${renderStates1};
+                          this.state = Object.assign(state, JSON.parse(JSON.stringify(props)));
+                        `,
                     ];
                 }
 
                 classData = classData
-                    .concat(states)
                     .concat(lifeCycles)
                     .concat(methods)
+                    .concat(init)
+                    .concat(initClass)
                     .concat(render);
                 classData.push("}");
 
                 classes.push(classData.join("\n"));
             } else {
-                result += generateRender(schema);
+                let newGenerate = generateRender(schema, false);
+                result += newGenerate.xml;
+
             }
         }
 
@@ -434,26 +621,29 @@ module.exports = function (schema, option) {
         });
     }
 
-    // start parse schema
+// start parse schema
     transform(schema);
-    // flexDirection -> flex-direction
+// flexDirection -> flex-direction
     const parseCamelToLine = (string) => {
         return string.split(/(?=[A-Z])/).join('-').toLowerCase();
     }
     let lessList = [];
-    // className structure support
+// className structure support
     const generateLess = (schema, style) => {
         let less = '';
 
         function walk(json, parent) {
-            let close= false;
+            let close = false;
             if (json.props && json.props.className) {
                 let className = _.camelCase(json.props.className);
+                if (_.has(json, "smart.layerProtocol.loop.type")) {
+                    className = json.smart.layerProtocol.loop.type;
+                }
                 parent = parent + ">" + className;
 
-                if (lessList.indexOf(parent) === -1) {
+                if (lessList.indexOf(parent) === -1) {  //不重复则进行
                     lessList.push(parent);
-                    close=true;
+                    close = true;
                     less += `.${className} {`;
 
                     for (let key in style[className]) {
@@ -475,7 +665,8 @@ module.exports = function (schema, option) {
 
 
         }
-        let parent ="";
+
+        let parent = "";
         walk(schema, parent);
 
         return less;
@@ -489,16 +680,17 @@ module.exports = function (schema, option) {
     let css = `import Taro from '@tarojs/taro';
   
   export default ${toString(style)}`;
+    try {
 
-    css = css.replace(/"Taro.pxTransform\(/g, "Taro.pxTransform(");
-    css = css.replace(/\)px"/g, ")");
+        css = css.replace(/"Taro.pxTransform\(/g, "Taro.pxTransform(");
+        css = css.replace(/\)px"/g, ")");
 
-    return {
-        panelDisplay: [
-            {
-                panelName: `index.jsx`,
-                panelValue: prettier.format(
-                    `
+        return {
+            panelDisplay: [
+                {
+                    panelName: `index.jsx`,
+                    panelValue: prettier.format(
+                        `
           'use strict';
 
           import Taro from "@tarojs/taro";
@@ -512,16 +704,21 @@ module.exports = function (schema, option) {
           ${classes.join("\n")}
           export default Index; 
         `,
-                    prettierOpt
-                ),
-                panelType: "jsx",
-            },
-            {
-                panelName: `index.scss`,
-                panelValue: prettier.format(generateLess(schema, style), {parser: 'scss'}),
-                panelType: "scss",
-            },
-        ],
-        noTemplate: true,
-    };
-};
+                        prettierOpt
+                    ),
+                    panelType: "jsx",
+                },
+                {
+                    panelName: `index.scss`,
+                    panelValue: prettier.format(generateLess(schema, style), {parser: 'scss'}),
+                    panelType: "scss",
+                },
+            ],
+            noTemplate: true,
+        };
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+;
